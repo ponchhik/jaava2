@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = '21.0.2'
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+dependencies {
+    // JavaFX (OpenJFX): в состав JDK не входит; нужная платформенная сборка подбирается Gradle автоматически
+    implementation 'org.openjfx:javafx-controls:21.0.5'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainClass = 'booking.Main'
+}
+
+// Самопроверка структуры: случайные операции против перебора по массиву
+tasks.register('selfTest', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'booking.experiment.SelfTest'
+}
+
+// Замеры времени в консоль (то же, что кнопка «Замеры»)
+tasks.register('bench', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'booking.experiment.Benchmark'
+}
+
+// Демонстрация гонки потоков в консоль
+tasks.register('race', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'booking.experiment.RaceDemo'
+}
+
+// Независимые проверки отдельных сценариев без дополнительных зависимостей
+tasks.register('focusedTest', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'booking.experiment.FocusedTests'
+}
